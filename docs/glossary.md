@@ -128,4 +128,108 @@ Routes Admin Panel, Orchestrator, Docs, and other services.
 A Docker runtime environment for an isolated service (nginx, web, orchestrator, ai-memory).
 
 ### **Service**
-A logical microservice within the pla
+A logical microservice within the platform running inside one or more containers.
+
+---
+
+# 5. Data & Integrations
+
+### **Identity Object**
+Stores caller identity: name, phone number, email, and profile traits.
+
+### **Preference Object**
+Caller preferences (communication method, language, preferred agent, quote type, follow-up preferences).
+
+### **Relationship Object**
+Entity relationships (e.g., Caller ↔ Policy, Spouse ↔ Insured).
+
+### **Fact Object**
+Discrete, structured data extracted during calls (address, vehicle year, coverage tier, deductible preferences).
+
+### **Endpoint Token**
+Authentication token for secure API communication (AI-Memory, Orchestrator, Admin).
+
+### **Tenant ID**
+Unique identifier for each tenant across all services.
+
+### **User ID**
+Normalized representation of a phone number used for memory storage in AI-Memory.
+
+### **Phone Hash**
+SHA-256 hashed phone number for index and privacy.
+
+### **Memory Stream**
+Chronological list of memory objects for a caller or session.
+
+---
+
+# 6. Domains & URLs
+
+### **Public Docs Domain**
+`https://docs.neurospherevoiceai.com` — hosts platform documentation.
+
+### **API Base URL**
+Tenant-specific base for API access.  
+Example:  
+`https://app.neurospherevoiceai.com/api/customers/{tenant_id}/`
+
+### **Admin Panel URL**
+The configuration interface for each tenant.
+
+### **Webhook URL**
+HTTP endpoint Twilio uses for streaming calls, status callbacks, and SMS events.
+
+### **Tenant Routing**
+Logic that determines which tenant a call or request belongs to.
+
+---
+
+# 7. Deployment Concepts
+
+### **Environment**
+Execution mode: `prod`, `dev`, or `local`.  
+Impacts logging, LLM temperature, routing, and behaviors.
+
+### **Container Image**
+The Docker image for a service (nginx, orchestrator, web, or ai-memory).
+
+### **Volume / Bind Mount**
+File system mapping host → container.  
+Example: `/opt/docs → /var/www/docs`.
+
+### **Symlink**
+Symbolic link that allows multiple paths to reference the same directory.  
+Used for mapping neurosphere-docs → `/opt/docs`.
+
+### **Update Script (`update.sh`)**
+Automates:
+- Pulling latest ChatStack + AI-Memory code  
+- Rebuilding orchestrator/web  
+- Restarting nginx  
+- Cleaning Docker images  
+
+### **Health Check**
+Periodic service validation for orchestrator, AI-Memory, and admin panel.
+
+---
+
+# 8. Logging & Monitoring
+
+### **Request ID**
+Unique ID assigned to inbound/outbound requests for debugging and traceability.
+
+### **Call ID**
+Unique identifier for a phone call session.
+
+### **Memory Index**
+Ordered list of memory objects associated with a caller.
+
+### **Event Log**
+Chronological sequence of system events.
+
+### **Error Boundary**
+Architecture component ensuring one subsystem’s error does not crash others.
+
+---
+
+# ⭐ END OF GLOSSARY
