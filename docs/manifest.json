@@ -1,0 +1,9 @@
+{
+  "glossary_version": "1.0.0",
+  "endpoints_version": "1.0.0",
+  "ports_version": "1.0.0",
+  "architecture_version": "1.0.0",
+  "memory_model_version": "1.0.0",
+  "docker_services_version": "1.0.0",
+  "tenant_model_version": "1.0.0"
+}
