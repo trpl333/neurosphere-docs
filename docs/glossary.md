@@ -2,258 +2,130 @@
 
 This file will contain the official glossary of all terms used across the NeuroSphere platform.
 
-📘 NeuroSphereAI Global Glossary
+# 📘 NeuroSphereAI Global Glossary
+_Last updated: 2025-11-20_
 
-Last updated: 2025-11-20
-Authoritative source for terminology used across: ChatStack, AI-Memory, Orchestrator, Admin Panel, and Voice AI.
+This glossary defines all terminology used across the NeuroSphereAI ecosystem including ChatStack, AI-Memory, Orchestrator, Admin Panel, Voice AI, Telephony, Deployment Infrastructure, and API Services.
+
+---
 
 # 1. Core Concepts
-Tenant
 
-A business entity using the NeuroSphereAI platform. Each tenant has isolated data, phone numbers, memory storage, configuration, and admin access.
-Example: Peterson Insurance.
+### **Tenant**
+A business entity using the NeuroSphereAI platform. Each tenant has isolated data, phone numbers, memory storage, configuration, and admin access.  
+*Example: Peterson Insurance.*
 
-Customer
+### **Customer**
+The internal database term equivalent to *Tenant*. Used throughout ChatStack.
 
-Synonym for Tenant used in the ChatStack database schema. Internally represents the same concept.
+### **Customer User**
+A client or prospect of the tenant (e.g., policyholder, lead, caller).  
+Not the tenant’s staff. Identified primarily by phone number.
 
-Customer User
+### **Caller**
+Any inbound phone user contacting a tenant phone number. If recognized, mapped to a Customer User profile in AI-Memory.
 
-A client or prospect of the tenant.
-This is the end user calling in or receiving calls — not the tenant’s staff.
-Identified by phone number.
+### **Agent**
+A human staff member of the tenant (e.g., licensed insurance agent).  
+May receive transferred calls from the Voice AI.
 
-Caller
+### **Admin User**
+A tenant staff member with access to the Admin Panel for configuration and management.
 
-Any inbound phone user contacting the tenant’s phone number.
-If recognized, mapped to a Customer User profile in AI-Memory.
+### **Session**
+A single conversational episode — call, chat, or automated workflow.  
+Tracks state, transcription, memory usage, and interaction flow.
 
-Agent
+### **Interaction**
+Any meaningful exchange between the user and the system — spoken message, LLM response, function call, memory update, or prompt cycle.
 
-A human staff member of the tenant (e.g., licensed insurance agent).
-May receive transferred calls from the voice AI.
-
-Admin User
-
-A privileged login user of the tenant’s Admin Panel.
-
-Session
-
-A single conversational episode — a call, chat, or AI-driven workflow.
-Tracks state, memory usage, and interactions.
-
-Interaction
-
-Any meaningful exchange between the user and the system — message, function call, call segment, or memory update.
+---
 
 # 2. NeuroSphereAI System Entities
-AI-Memory
 
-The NeuroSphereAI subsystem responsible for long-term, structured, recallable memory for each caller and tenant.
+### **AI-Memory**
+Subsystem responsible for long-term, structured, recallable memory for each caller and tenant.
 
-Memory Object
+### **Memory Object**
+A structured item stored in AI-Memory — facts, preferences, relationships, identity attributes, call summaries, and more.
 
-A structured item stored in AI-Memory such as facts, preferences, relationships, identity attributes, or call summaries.
+### **Memory Slice**
+A filtered set of memory objects retrieved for a specific prompt or call.
 
-Memory Slice
+### **Personality Sliders**
+Configurable attributes controlling tone, empathy, pacing, confidence, humor, and conversational style for the Voice AI.
 
-A filtered collection of memory objects retrieved for a specific call or prompt.
+### **Prompt Template**
+Reusable instructions that define how the LLM performs tasks.  
+Templates can embed memory slices, call context, tenant configuration, business logic, and constraints.
 
-Personality Sliders
+### **Manifest**
+A versioned JSON document describing glossary terms, endpoints, ports, and platform-level definitions. Future anchor for cross-system synchronization.
 
-Configurable attributes controlling tone, pacing, empathy, assertiveness, humor, and conversational style.
+### **Knowledge Base Document**
+Tenant- or admin-provided reference materials (PDF, text, Markdown) ingested by the system for retrieval and context.
 
-Prompt Template
+### **Event Trigger**
+A system event (call started, lead created, memory updated, transfer invoked) that initiates logic or automation.
 
-Reusable structured prompts used by orchestrator or LLM. May embed memory slices, context, system instructions, and tenant configuration.
-
-Manifest
-
-A versioned JSON document describing glossary terms, endpoints, ports, and system-level definitions. Future anchor for cross-service synchronization.
-
-Knowledge Base Document
-
-Tenant-provided or admin-provided reference material ingested into the system for improved accuracy and retrieval.
-
-Event Trigger
-
-Any system-level event (call answered, lead created, transfer triggered, memory updated) that may initiate automation.
+---
 
 # 3. Voice & Telephony
-Inbound Call
 
-A call received through a tenant’s Twilio number routed into ChatStack Nginx → Orchestrator → Voice AI pipeline.
+### **Inbound Call**
+A call received through a tenant’s Twilio number and routed to ChatStack → Orchestrator → Voice AI pipeline.
 
-Outbound Call
+### **Outbound Call**
+A proactive call placed by NeuroSphereAI (e.g., follow-up, quote request, renewal, campaigns).
 
-A proactive call initiated by NeuroSphereAI (e.g., follow-up, quote request, renewal, campaign).
+### **Webhook Request**
+Real-time HTTP request from Twilio carrying audio streams, call events, SMS messages, or status callbacks.
 
-Webhook Request
+### **Twilio Number**
+Tenant-owned or platform-provisioned phone number used for inbound and outbound interactions.
 
-Real-time Twilio event (media stream, status callback, SMS webhook) forwarded into NeuroSphereAI.
+### **Transfer Rule**
+Configuration that hands off the call to a human agent based on keywords (“agent,” “representative”), intent, policy type, or caller identity.
 
-Twilio Number
+### **Screening Rule**
+Logic that determines whether a call should be transferred, blocked, routed to voicemail, or assigned to the Voice AI.
 
-The tenant-owned or platform-provisioned phone number used for inbound/outbound voice flows.
+### **Human Takeover**
+When a call transitions from AI → Human agent.  
+Triggered by caller request or rule-based logic.
 
-Transfer Rule
+### **Call Summary**
+AI-generated summary stored in AI-Memory after a call completes.
 
-A configuration rule that transfers a call to a human agent when certain conditions are met (e.g., keyword match “agent,” policy type, or caller identity).
+### **Transcript Chunk**
+A segment of real-time audio transcription used as input to the LLM and AI-Memory.
 
-Screening Rule
-
-Determines whether a call should be live-transferred, dropped, filtered, or redirected based on tenant logic.
-
-Human Takeover
-
-When a call transitions from AI to a human agent—triggered manually (caller request) or automatically (rule-based).
-
-Call Summary
-
-AI-generated summary of a completed call stored in AI-Memory.
-
-Transcript Chunk
-
-A segment of the real-time audio transcription, used for memory updates, processing, and LLM context.
+---
 
 # 4. Application Layers (Backend Architecture)
-Orchestrator
 
-The FastAPI service managing LLM calls, memory retrieval, prompt construction, audio routing, and conversation logic.
+### **Orchestrator**
+FastAPI backend service managing LLM calls, prompt construction, memory retrieval, streaming audio routing, and conversation logic.
 
-Admin Panel
+### **Admin Panel**
+Flask-based interface for greetings, transfer rules, sliders, configuration, and knowledge base management.
 
-The Flask web application providing configuration interface, greeting templates, transfer rules, personality sliders, and knowledge base upload.
+### **AI-Memory Worker**
+Service that writes and retrieves memory objects for each caller and tenant.
 
-AI-Memory Worker
+### **Media Relay**
+Handles real-time audio streaming between Twilio, LLM, and text-to-speech (TTS) engine.
 
-A service handling write/read operations to the tenant-specific memory store.
+### **LLM Engine**
+Model endpoint that generates conversational responses.  
+Examples: *Qwen2-7B*, *Falcon-H1-34B*.
 
-Media Relay
+### **Nginx Reverse Proxy**
+Entry point for all web and API traffic.  
+Routes Admin Panel, Orchestrator, Docs, and other services.
 
-Handles real-time audio streaming between Twilio, LLM, and TTS engines.
+### **Container**
+A Docker runtime environment for an isolated service (nginx, web, orchestrator, ai-memory).
 
-LLM Engine
-
-The model endpoint (RunPod, local GPU, or cloud) powering the conversational responses.
-Examples: Qwen2-7B, Falcon-H1-34B.
-
-Nginx Reverse Proxy
-
-Entry point for all HTTP/HTTPS traffic. Routes admin panel, orchestrator, and docs domains.
-
-Container
-
-A Docker runtime environment containing an isolated service (nginx, web, orchestrator, ai-memory).
-
-Service
-
-A logical component inside ChatStack, orchestrator, or AI-Memory running inside a container.
-
-# 5. Data & Integrations
-Identity Object
-
-Stores who the caller is — name, phone number, email, and any known profile traits.
-
-Preference Object
-
-Caller preferences such as communication mode, preferred agent, language, quote type, or requested follow-up.
-
-Relationship Object
-
-Tagged connections between entities (e.g., Caller ↔ Policy, Spouse ↔ Insured).
-
-Fact Object
-
-Discrete data points gathered from calls (address, vehicle year, deductible, coverage tier).
-
-Endpoint Token
-
-Authentication token enabling communication with services (AI-Memory, Orchestrator, Admin).
-
-Tenant ID
-
-Unique identifier for each tenant in ChatStack and AI-Memory.
-
-User ID
-
-Phone-number–normalized identifier for caller memory storage.
-
-Phone Hash
-
-SHA-256 normalized representation of a phone number for indexing and privacy.
-
-Memory Stream
-
-The sequence of memory objects recorded throughout a call or session.
-
-# 6. Domains & URLs
-Public Docs Domain
-
-https://docs.neurospherevoiceai.com — hosts all documentation for tenants and internal devs.
-
-API Base URL
-
-Tenant-specific base URL for API access.
-Example: https://app.neurospherevoiceai.com/api/customers/{tenant_id}/
-
-Admin Panel URL
-
-Web interface for tenant settings and configuration.
-
-Webhook URL
-
-Endpoint Twilio uses to send calls, audio, SMS, and callback information.
-
-Tenant Routing
-
-Logic determining which tenant a call or API request belongs to based on request path, number, or headers.
-
-# 7. Deployment Concepts
-Environment
-
-Can be prod, dev, or local.
-Controls logging level, LLM temperature, and routing behavior.
-
-Container Image
-
-The built Docker image for each service (nginx, orchestrator, web, ai-memory).
-
-Volume / Bind Mount
-
-File system mapping from host → container.
-Example: /opt/docs → /var/www/docs
-
-Symlink
-
-A pointer path linking one directory to another.
-Used to map neurosphere-docs → /opt/docs.
-
-Update Script (update.sh)
-
-Automates pulling GitHub changes, recreating containers, refreshing nginx, and clearing build cache.
-
-Health Check
-
-Periodic status check for orchestrator, AI-Memory, and admin services.
-
-# 8. Logging & Monitoring
-Request ID
-
-Unique identifier assigned to each inbound/outbound request for tracing.
-
-Call ID
-
-Unique identifier for a phone call session, used across Twilio, ChatStack, and AI-Memory.
-
-Memory Index
-
-Ordered or timestamped list of memory objects for a caller.
-
-Event Log
-
-Chronological record of system events, actions, and transitions.
-
-Error Boundary
-
-Containment mechanism ensuring errors in one layer do not cascade into others.
+### **Service**
+A logical microservice within the pla
